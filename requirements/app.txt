@@ -1,4 +1,6 @@
-guniflask
+guniflask>=0.7.0
 guniflask-cli
 neo4j>=1.7.6
 elasticsearch>=7.6.0,<8.0.0
+Flask-SQLAlchemy>=2.4.1
+PyMySQL>=0.9.3
