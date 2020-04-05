@@ -1,2 +1,4 @@
 guniflask
 guniflask-cli
+neo4j>=1.7.6
+elasticsearch>=7.6.0,<8.0.0
