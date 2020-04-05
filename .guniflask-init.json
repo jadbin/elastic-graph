@@ -1,0 +1,6 @@
+{
+  "authentication_type": null,
+  "cli_version": "0.1.0",
+  "port": 6660,
+  "project_name": "elastic_graph"
+}

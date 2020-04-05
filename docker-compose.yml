@@ -1,0 +1,6 @@
+version: '3'
+services:
+  elastic_graph:
+    build: .
+    ports:
+      - 6660:6660
