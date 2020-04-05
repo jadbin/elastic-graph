@@ -9,6 +9,7 @@ base_url = 'http://localhost:6660/api'
 
 def test_entity_management():
     local_id = 'person_小明'
+    local_id1 = local_id + '1'
     local_id2 = local_id + '2'
     name = '小明'
     entity_type = 'person'
@@ -39,8 +40,21 @@ def test_entity_management():
     assert entity['free_properties']['兴趣'] == ['游戏', '食物']
     assert entity['labels'] == ['student', 'person']
 
-    _create_entity(local_id=local_id2, entity_type=entity_type, entity_name=name,
-                   properties=properties, free_properties=free_properties, labels=labels)
+    _create_entities(local_id=local_id, entity_type=entity_type, entity_name=name,
+                     properties=properties, free_properties=free_properties, labels=labels, n=2)
+    entity = _get_entity(local_id=local_id1)
+    assert entity['local_id'] == local_id1
+    assert entity['entity_name'] == '小明'
+    assert entity['entity_type'] == 'person'
+    assert len(entity['properties']) == 2
+    assert entity['properties']['age'] == 18
+    assert entity['properties']['hobbies'] == ['game', 'food']
+    assert len(entity['free_properties']) == 2
+    assert entity['free_properties']['年龄'] == '18'
+    assert entity['free_properties']['兴趣'] == ['游戏', '食物']
+    assert entity['labels'] == ['student', 'person']
+
+    _delete_entity(local_id=local_id1)
 
     _create_relation(head_entity_id=local_id, tail_entity_id=local_id2, relation_type=relation_type, by_local=True)
     _create_relation(head_entity_id=local_id2, tail_entity_id=local_id, relation_type=relation_type2, by_local=True)
@@ -81,6 +95,21 @@ def _create_entity(local_id: str = None, entity_type: str = None, entity_name: s
                 free_properties=free_properties,
                 labels=labels)
     resp = requests.post('{}/entities'.format(base_url), json=data)
+    assert resp.status_code == 200, resp.text
+
+
+def _create_entities(local_id: str = None, entity_type: str = None, entity_name: str = None,
+                     properties: dict = None, free_properties: dict = None, labels: list = None, n=2):
+    data = []
+    for i in range(n):
+        d = dict(local_id='{}{}'.format(local_id, i + 1),
+                 entity_type=entity_type,
+                 entity_name=entity_name,
+                 properties=properties,
+                 free_properties=free_properties,
+                 labels=labels)
+        data.append(d)
+    resp = requests.post('{}/_bulk/entities'.format(base_url), json=data)
     assert resp.status_code == 200, resp.text
 
 
