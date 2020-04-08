@@ -4,7 +4,7 @@ from typing import List
 
 from flask import abort
 
-from guniflask.web import blueprint, post_route, delete_route, RequestBody
+from guniflask.web import blueprint, post_route, RequestBody
 
 from elastic_graph.views.base_view import RelationView
 from elastic_graph.services.relation import RelationService
