@@ -75,9 +75,10 @@ class EntityController:
         return jsonify(self.entity_service.get_view_of_entity(base_entity).to_dict())
 
     @post_route('/_search/entities/by-query')
-    def search_entities_by_query(self, query: EntitySearchQueryView = RequestBody):
-        # TODO
-        pass
+    def search_entities_by_query(self, query_view: EntitySearchQueryView = RequestBody):
+        entities = self.entity_service.search_entities_by_query(query_view.query)
+        data = [e.to_dict() for e in entities]
+        return jsonify(data)
 
     @post_route('/entities/<entity_id>/find-parents')
     def find_parents(self, entity_id: str, by_local: bool = False):

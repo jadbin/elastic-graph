@@ -110,3 +110,6 @@ class BaseEntityService:
     def _update_base_entity_by_entity_view(self, base_entity: BaseEntity, entity_view: EntityView):
         base_entity.local_id = entity_view.local_id
         base_entity.entity_type = entity_view.entity_type
+
+    def search_entities_by_query(self, query: str) -> list:
+        return self.es.search_documents_by_query(query)

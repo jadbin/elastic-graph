@@ -58,9 +58,26 @@ class ElasticSearchService:
             })
         bulk(self.es, data)
 
-    def search_documents_by_query(self, query: str):
-        # TODO
-        pass
+    def search_documents_by_query(self, query: str) -> List[EntityView]:
+        body = {
+            'query': {
+                'bool': {
+                    'must': {
+                        'simple_query_string': {
+                            'query': query
+                        }
+                    }
+                }
+            },
+            'from': 0,
+            'size': 100
+        }
+        params = {'timeout': '20s'}
+        result = self.es.search(body=body, index='elastic_graph.entity.*', params=params)
+        entities = []
+        for obj in result['hits']['hits']:
+            entities.append(self._read_entity_view_from_source(obj['_source']))
+        return entities
 
     def _get_source_from_entity_view(self, entity_view: EntityView):
         source = {
@@ -70,12 +87,14 @@ class ElasticSearchService:
             'entity_name': entity_view.entity_name,
             'properties': entity_view.properties,
             'free_properties': self._format_free_properties(entity_view.free_properties),
-            'labels': list(entity_view.labels)
+            'labels': self._format_labels(entity_view.labels)
         }
         return source
 
     def _format_free_properties(self, props: dict) -> List[str]:
         result = []
+        if props is None:
+            return result
         for p in props:
             vlist = props[p]
             if not isinstance(vlist, list):
@@ -84,6 +103,11 @@ class ElasticSearchService:
                 s = '{}{}{}'.format(p, self.free_property_delimiter, v)
                 result.append(s)
         return result
+
+    def _format_labels(self, labels: list) -> List[str]:
+        if labels is None:
+            return []
+        return list(labels)
 
     def _read_entity_view_from_source(self, source: dict):
         entity_view = EntityView()
