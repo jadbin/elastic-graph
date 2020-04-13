@@ -1,5 +1,7 @@
 # coding=utf-8
 
+import time
+
 from tests.api import search_entities, create_entity, delete_entity
 
 
@@ -13,6 +15,7 @@ def test_entity_search():
     }
     create_entity(local_id=local_id, entity_type=entity_type, entity_name=name,
                   properties=properties)
+    time.sleep(1)
 
     result = search_entities('学习')
     assert len(result) == 0
