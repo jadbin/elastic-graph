@@ -101,6 +101,14 @@ class EntityController:
         self.entity_service.delete_entity_relations(base_entity)
         return 'success'
 
+    @delete_route('/entities/_all')
+    def delete_entity_relations(self):
+        all_entities = BaseEntity.query.all()
+        for e in all_entities:
+            self.delete_entity_relations(e.id)
+            self.delete_entity(e.id)
+        return 'success'
+
     def _get_base_entity(self, entity_id, by_local=False) -> BaseEntity:
         if by_local:
             base_entity = BaseEntity.query.filter_by(local_id=entity_id).first()
