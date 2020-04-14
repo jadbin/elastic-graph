@@ -102,7 +102,7 @@ class EntityController:
         return 'success'
 
     @delete_route('/entities/_all')
-    def delete_entity_relations(self):
+    def delete_all_entities(self):
         all_entities = BaseEntity.query.all()
         for e in all_entities:
             self.delete_entity_relations(e.id)
