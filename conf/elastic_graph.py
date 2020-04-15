@@ -10,4 +10,5 @@ neo4j_auth = ('neo4j', 'password')
 
 # guniflask configuration
 guniflask = dict(
+    cors=True
 )
